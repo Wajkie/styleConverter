@@ -38,3 +38,7 @@ src/features/_global_properties.scss
 _variables.scss
 tailwind.mixins.scss
 CONVERSION_GUIDE.md
+*.toml
+# Local Netlify folder
+.netlify
+/script/tailwindConvert.ts
