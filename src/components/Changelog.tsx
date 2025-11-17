@@ -91,8 +91,7 @@ export const Changelog: React.FC = () => {
     hidden: { opacity: 0, x: -30 },
     visible: { 
       opacity: 1, 
-      x: 0,
-      transition: { duration: 0.5, ease: 'easeOut' }
+      x: 0
     }
   };
 
@@ -100,8 +99,7 @@ export const Changelog: React.FC = () => {
     hidden: { opacity: 0, x: -20 },
     visible: { 
       opacity: 1, 
-      x: 0,
-      transition: { duration: 0.3 }
+      x: 0
     }
   };
 
