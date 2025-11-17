@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface ChangelogEntry {
   version: string;
@@ -67,53 +68,143 @@ const changelog: ChangelogEntry[] = [
 ];
 
 export const Changelog: React.FC = () => {
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'feature': return 'bg-green-100 text-green-800';
-      case 'improvement': return 'bg-blue-100 text-blue-800';
-      case 'fix': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'feature': return '‚ú®';
       case 'improvement': return '‚ö°';
-      case 'fix': return 'Ì∞õ';
-      default: return 'Ì≥ù';
+      case 'fix': return 'üêõ';
+      default: return 'üì¶';
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  const entryVariants = {
+    hidden: { opacity: 0, x: -30 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.5, ease: 'easeOut' }
+    }
+  };
+
+  const changeVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.3 }
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl font-bold text-gray-900 mb-8">Changelog</h2>
-      <div className="space-y-8">
-        {changelog.map((entry) => (
-          <div key={entry.version} className="border-l-4 border-blue-500 pl-6 pb-6">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl font-bold text-gray-900">v{entry.version}</span>
-              <span className="text-sm text-gray-500">{entry.date}</span>
+    <motion.div 
+      style={{ maxWidth: '56rem', margin: '0 auto', padding: '1.5rem' }}
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.h2 
+        style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '2rem', color: 'hsl(var(--foreground))' }}
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Changelog
+      </motion.h2>
+      <motion.div 
+        style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+        variants={containerVariants}
+      >
+        {changelog.map((entry, entryIdx) => (
+          <motion.div 
+            key={entry.version} 
+            style={{ borderLeft: '4px solid hsl(var(--primary))', paddingLeft: '1.5rem', paddingBottom: '1.5rem' }}
+            variants={entryVariants}
+            whileHover={{ x: 10, borderLeftWidth: '6px' }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div 
+              style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: entryIdx * 0.1 }}
+            >
+              <motion.span 
+                style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'hsl(var(--foreground))' }}
+                whileHover={{ scale: 1.1 }}
+              >
+                v{entry.version}
+              </motion.span>
+              <span style={{ fontSize: '0.875rem', color: 'hsl(var(--muted-foreground))' }}>{entry.date}</span>
               {entry.version === changelog[0].version && (
-                <span className="px-2 py-1 bg-blue-500 text-white text-xs rounded-full font-semibold">
+                <motion.span 
+                  style={{ padding: '0.25rem 0.5rem', background: 'hsl(var(--primary))', color: 'hsl(var(--primary-foreground))', fontSize: '0.75rem', borderRadius: '9999px', fontWeight: '600' }}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
+                  whileHover={{ scale: 1.15, rotate: 5 }}
+                >
                   Latest
-                </span>
+                </motion.span>
               )}
-            </div>
-            <ul className="space-y-2">
+            </motion.div>
+            <motion.ul 
+              style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+              variants={containerVariants}
+            >
               {entry.changes.map((change, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <span className={`px-2 py-1 rounded text-xs font-semibold ${getTypeColor(change.type)} inline-flex items-center gap-1`}>
+                <motion.li 
+                  key={idx} 
+                  style={{ display: 'flex', alignItems: 'start', gap: '0.75rem' }}
+                  variants={changeVariants}
+                  whileHover={{ x: 5 }}
+                >
+                  <motion.span 
+                    style={{ 
+                      padding: '0.25rem 0.5rem', 
+                      borderRadius: '0.25rem', 
+                      fontSize: '0.75rem', 
+                      fontWeight: '600',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      whiteSpace: 'nowrap',
+                      ...(change.type === 'feature' ? {
+                        background: 'hsl(142 76% 25%)',
+                        color: 'hsl(142 76% 90%)',
+                        border: '1px solid hsl(142 76% 30%)'
+                      } : change.type === 'improvement' ? {
+                        background: 'hsl(200 95% 25%)',
+                        color: 'hsl(200 95% 90%)',
+                        border: '1px solid hsl(200 95% 30%)'
+                      } : {
+                        background: 'hsl(0 84% 25%)',
+                        color: 'hsl(0 84% 95%)',
+                        border: '1px solid hsl(0 84% 30%)'
+                      })
+                    }}
+                    whileHover={{ scale: 1.1, rotate: 3 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <span>{getTypeIcon(change.type)}</span>
-                    <span className="capitalize">{change.type}</span>
-                  </span>
-                  <span className="text-gray-700 flex-1">{change.description}</span>
-                </li>
+                    <span style={{ textTransform: 'capitalize' }}>{change.type}</span>
+                  </motion.span>
+                  <span style={{ color: 'hsl(var(--foreground))', flex: 1, lineHeight: '1.6' }}>{change.description}</span>
+                </motion.li>
               ))}
-            </ul>
-          </div>
+            </motion.ul>
+          </motion.div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
